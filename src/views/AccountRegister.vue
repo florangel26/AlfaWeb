@@ -25,7 +25,7 @@
                         >
                             Iniciar
                         </v-btn>
-                        <v-btn color="error" class="mr-4">
+                        <v-btn color="error" class="mr-4" @click="reset">
                             Limpiar Formulario
                         </v-btn>
                         <v-btn color="warning"> Limpiar Validación </v-btn>
@@ -70,6 +70,10 @@ export default {
                 .catch((error) => {
                     alert(error.message);
                 });
+        },
+        reset() {
+            console.log('reset...');
+            this.$refs.formRegister.reset();
         },
     },
 };

@@ -58,7 +58,14 @@ export default {
     created() {
         onAuthStateChanged(auth, (user) => {
             this.user = user;
+
+            if (this.user == null) {
+                this.$router.push('/login');
+            }
         });
+    },
+    mounted() {
+        console.log(auth.user);
     },
     methods: {
         async closeSession() {
@@ -75,7 +82,7 @@ export default {
         },
         goToRegister() {
             this.drawer = false;
-            this.$router.push('/admin/courses');
+            this.$router.push('/register');
         },
     },
 };
