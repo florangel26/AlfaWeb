@@ -39,6 +39,49 @@
                     </v-data-table>
                 </v-col>
             </v-row>
+            <br />
+            <br />
+
+            <v-alert dense outlined color="purple" icon="mdi-account-group">
+                Cantidad total de alumnos permitidos:
+                <strong> </strong>
+                alumnos
+            </v-alert>
+
+            <v-alert
+                dense
+                outlined
+                color="blue"
+                icon="mdi-account-multiple-check"
+            >
+                Cantidad total de alumnos inscritos:
+                <strong> </strong>
+                alumnos
+            </v-alert>
+
+            <v-alert dense outlined color="red" icon="mdi-account-clock">
+                Cantidad total de cupos restantes:
+                <strong> </strong>
+                alumnos
+            </v-alert>
+
+            <v-alert dense outlined color="pink" icon="mdi-block-helper">
+                Cantidad total de cursos terminados:
+                <strong> </strong>
+                cursos
+            </v-alert>
+
+            <v-alert dense outlined color="brown" icon="mdi-bell-ring">
+                Cantidad total de cursos activos:
+                <strong> </strong>
+                cursos
+            </v-alert>
+
+            <v-alert dense outlined color="deep-orange" icon="mdi-bell-ring">
+                Cantidad total de cursos:
+                <strong> </strong>
+                cursos
+            </v-alert>
         </v-container>
         <v-dialog v-model="dialog" max-width="290">
             <v-card>

@@ -2,7 +2,7 @@
     <div>
         <v-container>
             <v-row justify="center" class="mt-4">
-                <h1>Editando el curso: bla bla bla</h1>
+                <h1>Editando el curso:{{ name }}</h1>
                 <v-col cols="12">
                     <v-text-field
                         label="Nombre"
