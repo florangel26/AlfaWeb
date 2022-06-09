@@ -18,42 +18,49 @@
                                 <v-text-field
                                     label="Nombre"
                                     required
+                                    v-model="name"
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12">
                                 <v-text-field
                                     label="URL de la Imagen del Curso"
                                     required
+                                    v-model="url"
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12">
                                 <v-text-field
                                     label="Cupos del curso"
                                     type="number"
+                                    v-model="availableSpots"
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12">
                                 <v-text-field
-                                    label="Inscritos enel curso"
+                                    label="Inscritos en el curso"
                                     type="number"
+                                    v-model="registeredUsers"
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12">
                                 <v-text-field
                                     label="Duración del curso"
                                     required
+                                    v-model="courseLength"
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12">
                                 <v-text-field
                                     label="Costo del curso"
                                     type="number"
+                                    v-model="price"
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12">
                                 <v-text-field
                                     label="Código del curso"
                                     required
+                                    v-model="code"
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12">
@@ -61,6 +68,7 @@
                                     solo
                                     name="input-7-4"
                                     label="Descripción del curso"
+                                    v-model="description"
                                 ></v-textarea>
                             </v-col>
                             <div id="formOptions">
@@ -86,20 +94,53 @@
     </v-row>
 </template>
 <script>
+import { db } from '../../firebase';
+import { collection, addDoc } from 'firebase/firestore';
 export default {
     name: 'AddCourse',
     components: {},
     data() {
         return {
             dialog: false,
+            active: false,
+            availableSpots: 0,
+            courseCode: '',
+            courseLength: '',
+            date: '',
+            description: '',
+            name: '',
+            price: '',
+            registeredUsers: 0,
+            url: '',
         };
     },
     methods: {
         goToCreation() {
             this.$router.push('/');
         },
-        saveForm() {
-            this.dialog = false;
+        async saveForm() {
+            //dessert.id = nanoid(6);
+            try {
+                if (this.name == '') return;
+
+                await addDoc(collection(db, 'courses'), {
+                    active: this.active,
+                    availableSpots: this.availableSpots,
+                    courseCode: this.courseCode,
+                    courseLength: this.courseLength,
+                    date: this.date,
+                    description: this.description,
+                    name: this.name,
+                    price: this.price,
+                    registeredUsers: this.registeredUsers,
+                    url: this.url,
+                });
+
+                this.dialog = false;
+            } catch (error) {
+                console.log(error);
+            }
+            // commit("ADD_DESSERT", dessert);
         },
     },
 };

@@ -40,13 +40,39 @@
                 </v-col>
             </v-row>
         </v-container>
+        <v-dialog v-model="dialog" max-width="290">
+            <v-card>
+                <v-card-title>
+                    De verdad quieres borrar el registro?
+                </v-card-title>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+
+                    <v-btn color="green darken-1" text @click="dialog = false">
+                        No
+                    </v-btn>
+
+                    <v-btn color="green darken-1" text @click="delete_course()">
+                        Si
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
 <script>
 import AddCourse from '@/components/admin/AddCourse.vue';
 import { db } from '../../firebase';
-import { collection, query, onSnapshot } from 'firebase/firestore';
+import {
+    collection,
+    query,
+    onSnapshot,
+    doc,
+    deleteDoc,
+    updateDoc,
+} from 'firebase/firestore';
 import moment from 'moment';
 
 export default {
@@ -68,6 +94,8 @@ export default {
                 { text: 'Actions', value: 'actions', sortable: false },
             ],
             courses: [],
+            id: 0,
+            dialog: false,
         };
     },
     methods: {
@@ -98,6 +126,30 @@ export default {
                 this.courses = desserts;
             });
         },
+        async delete_course() {
+            try {
+                const docRef = doc(db, 'courses', this.id);
+                await deleteDoc(docRef);
+                this.loadCourses();
+                this.dialog = false;
+            } catch (error) {
+                console.log(error);
+                this.dialog = false;
+            }
+        },
+        //commit("DELETE_DESSERT", id);
+
+        async update_dessert(dessert) {
+            try {
+                const docRef = doc(db, 'courses', this.id);
+                await updateDoc(docRef, {
+                    name: dessert.name,
+                    calories: dessert.calories,
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        },
         formatPrice(value) {
             let val = (value / 1).toFixed(2).replace('.', ',');
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -109,6 +161,11 @@ export default {
         formatDate(value) {
             console.log(value.seconds);
             return moment.unix(value.seconds).format('DD/MM/YYYY');
+        },
+        deleteItem(item) {
+            console.log(item);
+            this.id = item.id;
+            this.dialog = true;
         },
     },
     components: {
