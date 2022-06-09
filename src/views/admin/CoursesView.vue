@@ -108,7 +108,7 @@ export default {
         },
         goToEdit(item) {
             console.log(item);
-            this.$router.push('/admin/edit');
+            this.$router.push('/admin/edit/' + item.id);
         },
         async loadCourses() {
             const q = query(collection(db, 'courses'));

@@ -4,7 +4,11 @@
             <v-row justify="center" class="mt-4">
                 <h1>Editando el curso: bla bla bla</h1>
                 <v-col cols="12">
-                    <v-text-field label="Nombre" required></v-text-field>
+                    <v-text-field
+                        label="Nombre"
+                        v-model="name"
+                        required
+                    ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                     <v-text-field
@@ -96,12 +100,23 @@
     </div>
 </template>
 <script>
+import { db } from '../../firebase';
+import { getDoc, doc } from 'firebase/firestore';
+
 export default {
     name: 'EditCourse',
     components: {},
     data() {
         return {
             finished: false,
+            courseCode: '',
+            courseLength: '',
+            date: '',
+            description: '',
+            name: '',
+            price: '',
+            registeredUsers: 0,
+            url: '',
         };
     },
     methods: {
@@ -111,6 +126,30 @@ export default {
         saveForm() {
             this.dialog = false;
         },
+        async get_course(id) {
+            try {
+                const docSnap = await getDoc(doc(db, 'courses', id));
+
+                if (docSnap.exists()) {
+                    console.log(docSnap.data());
+                    this.id = docSnap.data().id;
+                    this.courseCode = docSnap.data().courseCode;
+                    this.courseLength = docSnap.data().courseLength;
+                    this.date = docSnap.data().date;
+                    this.description = docSnap.data().description;
+                    this.name = docSnap.data().name;
+                    this.price = docSnap.data().price;
+                    this.registeredUsers = docSnap.data().registeredUsers;
+                    this.url = docSnap.data().url;
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+    },
+    mounted() {
+        console.log(this.$route.params.id);
+        this.get_course(this.$route.params.id);
     },
 };
 </script>
