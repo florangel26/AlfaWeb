@@ -20,11 +20,17 @@
                 class="hidden-sm-and-down"
                 @click="drawer = !drawer"
                 v-if="user"
-                >Menu</v-btn
-            >
+                ><v-app-bar-nav-icon></v-app-bar-nav-icon
+            ></v-btn>
             <v-toolbar-title class="AppTitle">{{ appTitle }}</v-toolbar-title>
             <v-spacer class="hidden-sm-and-down"></v-spacer>
-            <v-btn text class="hidden-sm-and-down" v-if="!user">INGRESAR</v-btn>
+            <v-btn
+                color="brown lighten-3"
+                class="hidden-sm-and-down mr-2"
+                v-if="!user"
+                @click="goToLogin()"
+                >INGRESAR</v-btn
+            >
             <v-btn
                 color="brown lighten-3"
                 class="hidden-sm-and-down"
@@ -32,6 +38,14 @@
                 @click="goToRegister()"
                 >REGISTRARTE</v-btn
             >
+
+            <h5
+                v-if="user !== null"
+                class="mr-2"
+                style="font-weight: 300; text-transform: uppercase"
+            >
+                {{ user.email }}
+            </h5>
             <v-btn
                 rounded
                 color="purple darken-4"
@@ -39,7 +53,7 @@
                 v-if="user"
                 @click="closeSession"
             >
-                Logout
+                <v-icon v-if="user !== null">mdi-logout</v-icon>
             </v-btn>
         </v-app-bar>
     </span>
@@ -87,6 +101,10 @@ export default {
         goToRegister() {
             this.drawer = false;
             this.$router.push('/register');
+        },
+        goToLogin() {
+            this.drawer = false;
+            this.$router.push('/login');
         },
     },
 };

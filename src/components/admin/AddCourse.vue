@@ -3,7 +3,13 @@
         <h1>Administración</h1>
         <v-dialog v-model="dialog" persistent max-width="600px">
             <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" dark v-bind="attrs" v-on="on">
+                <v-btn
+                    color="primary"
+                    dark
+                    v-bind="attrs"
+                    v-on="on"
+                    class="ml-5"
+                >
                     Agregar curso
                 </v-btn>
             </template>
@@ -32,14 +38,20 @@
                                 <v-text-field
                                     label="Cupos del curso"
                                     type="number"
-                                    v-model="availableSpots"
+                                    v-model.number="availableSpots"
+                                    :rules="textRules"
+                                    required
+                                    min="0"
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12">
                                 <v-text-field
                                     label="Inscritos en el curso"
                                     type="number"
-                                    v-model="registeredUsers"
+                                    v-model.number="registeredUsers"
+                                    :rules="textRules"
+                                    required
+                                    min="0"
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12">
@@ -112,6 +124,13 @@ export default {
             price: '',
             registeredUsers: 0,
             url: '',
+            textRules: [(v) => !!v || 'Field is required'],
+            studentRules: [
+                (v) => !!v || 'Field is required',
+                (v) =>
+                    v <= this.course.availability ||
+                    'More students than available spaces',
+            ],
         };
     },
     methods: {
