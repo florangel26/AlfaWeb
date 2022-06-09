@@ -15,7 +15,11 @@
         </v-navigation-drawer>
         <v-app-bar app color="purple darken-4" dark>
             <v-spacer class="hidden-md-and-up"></v-spacer>
-            <v-btn text class="hidden-sm-and-down" @click="drawer = !drawer"
+            <v-btn
+                text
+                class="hidden-sm-and-down"
+                @click="drawer = !drawer"
+                v-if="user"
                 >Menu</v-btn
             >
             <v-toolbar-title class="AppTitle">{{ appTitle }}</v-toolbar-title>
