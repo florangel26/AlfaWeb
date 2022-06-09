@@ -60,7 +60,7 @@
                                 <v-text-field
                                     label="Código del curso"
                                     required
-                                    v-model="code"
+                                    v-model="courseCode"
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12">
@@ -75,7 +75,7 @@
                                 <v-btn
                                     color="success"
                                     class="mr-4"
-                                    :click="this.saveForm()"
+                                    @click="saveForm()"
                                 >
                                     Agregar
                                 </v-btn>
