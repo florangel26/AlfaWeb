@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
 import AddCourse from '@/components/admin/AddCourse.vue';
 import { db } from '../../firebase';
 import {
@@ -93,12 +94,13 @@ export default {
                 { text: 'Fecha', value: 'date' },
                 { text: 'Actions', value: 'actions', sortable: false },
             ],
-            courses: [],
             id: 0,
             dialog: false,
         };
     },
     methods: {
+        ...mapActions(['get_courses']),
+
         getColor() {
             return 'green';
         },
@@ -171,9 +173,12 @@ export default {
     components: {
         AddCourse,
     },
+    computed: {
+        ...mapState(['courses']),
+    },
     mounted() {
-        console.log(db);
-        this.loadCourses();
+        //this.loadCourses();
+        this.get_courses();
     },
 };
 </script>
