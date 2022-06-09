@@ -10,9 +10,19 @@
                         :items-per-page="5"
                         class="elevation-1"
                     >
-                        <template v-slot:[`item.calories`]="{ item }">
-                            <v-chip :color="getColor(item.calories)" dark>
-                                {{ item.calories }}
+                        <template v-slot:[`item.price`]="{ item }">
+                            <v-chip :color="getColor()" dark>
+                                {{ formatPrice(item.price) }}
+                            </v-chip>
+                        </template>
+                        <template v-slot:[`item.active`]="{ item }">
+                            <v-chip :color="getFinishedColor(item.active)" dark>
+                                {{ formatFinished(item.active) }}
+                            </v-chip>
+                        </template>
+                        <template v-slot:[`item.date`]="{ item }">
+                            <v-chip :color="getColor()" dark>
+                                {{ formatDate(item.date) }}
                             </v-chip>
                         </template>
                         <template v-slot:[`item.actions`]="{ item }">
@@ -24,9 +34,7 @@
                             </v-icon>
                         </template>
                         <template v-slot:no-data>
-                            <v-btn color="primary" @click="initialize">
-                                Reset
-                            </v-btn>
+                            <v-btn color="primary"> Reset </v-btn>
                         </template>
                     </v-data-table>
                 </v-col>
@@ -37,6 +45,9 @@
 
 <script>
 import AddCourse from '@/components/admin/AddCourse.vue';
+import { db } from '../../firebase';
+import { collection, query, onSnapshot } from 'firebase/firestore';
+import moment from 'moment';
 
 export default {
     data() {
@@ -48,111 +59,64 @@ export default {
                     sortable: false,
                     value: 'name',
                 },
-                { text: 'Cupos', value: 'calories' },
-                { text: 'Inscritos', value: 'fat' },
-                { text: 'Duración', value: 'carbs' },
-                { text: 'Costo', value: 'protein' },
-                { text: 'Terminado', value: 'iron' },
-                { text: 'Fecha', value: 'iron' },
+                { text: 'Cupos', value: 'availableSpots' },
+                { text: 'Inscritos', value: 'registeredUsers' },
+                { text: 'Duración', value: 'courseLength' },
+                { text: 'Costo', value: 'price' },
+                { text: 'Terminado', value: 'active' },
+                { text: 'Fecha', value: 'date' },
                 { text: 'Actions', value: 'actions', sortable: false },
             ],
-            courses: [
-                {
-                    name: 'Frozen Yogurt',
-                    calories: 159,
-                    fat: 6.0,
-                    carbs: 24,
-                    protein: 4.0,
-                    iron: '1%',
-                },
-                {
-                    name: 'Ice cream sandwich',
-                    calories: 237,
-                    fat: 9.0,
-                    carbs: 37,
-                    protein: 4.3,
-                    iron: '1%',
-                },
-                {
-                    name: 'Eclair',
-                    calories: 262,
-                    fat: 16.0,
-                    carbs: 23,
-                    protein: 6.0,
-                    iron: '7%',
-                },
-                {
-                    name: 'Cupcake',
-                    calories: 305,
-                    fat: 3.7,
-                    carbs: 67,
-                    protein: 4.3,
-                    iron: '8%',
-                },
-                {
-                    name: 'Gingerbread',
-                    calories: 356,
-                    fat: 16.0,
-                    carbs: 49,
-                    protein: 3.9,
-                    iron: '16%',
-                },
-                {
-                    name: 'Jelly bean',
-                    calories: 375,
-                    fat: 0.0,
-                    carbs: 94,
-                    protein: 0.0,
-                    iron: '0%',
-                },
-                {
-                    name: 'Lollipop',
-                    calories: 392,
-                    fat: 0.2,
-                    carbs: 98,
-                    protein: 0,
-                    iron: '2%',
-                },
-                {
-                    name: 'Honeycomb',
-                    calories: 408,
-                    fat: 3.2,
-                    carbs: 87,
-                    protein: 6.5,
-                    iron: '45%',
-                },
-                {
-                    name: 'Donut',
-                    calories: 452,
-                    fat: 25.0,
-                    carbs: 51,
-                    protein: 4.9,
-                    iron: '22%',
-                },
-                {
-                    name: 'KitKat',
-                    calories: 518,
-                    fat: 26.0,
-                    carbs: 65,
-                    protein: 7,
-                    iron: '6%',
-                },
-            ],
+            courses: [],
         };
     },
     methods: {
-        getColor(calories) {
-            if (calories > 400) return 'red';
-            else if (calories > 200) return 'orange';
-            else return 'green';
+        getColor() {
+            return 'green';
+        },
+        getFinishedColor(value) {
+            if (value) return 'blue';
+            else return 'gray';
         },
         goToEdit(item) {
             console.log(item);
             this.$router.push('/admin/edit');
         },
+        async loadCourses() {
+            const q = query(collection(db, 'courses'));
+
+            onSnapshot(q, (querySnapshot) => {
+                const desserts = [];
+                querySnapshot.forEach((doc) => {
+                    desserts.push({
+                        id: doc.id,
+                        ...doc.data(),
+                    });
+                });
+
+                console.log(desserts);
+                this.courses = desserts;
+            });
+        },
+        formatPrice(value) {
+            let val = (value / 1).toFixed(2).replace('.', ',');
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        },
+        formatFinished(value) {
+            if (!value) return 'Si';
+            else return 'No';
+        },
+        formatDate(value) {
+            console.log(value.seconds);
+            return moment.unix(value.seconds).format('DD/MM/YYYY');
+        },
     },
     components: {
         AddCourse,
+    },
+    mounted() {
+        console.log(db);
+        this.loadCourses();
     },
 };
 </script>
