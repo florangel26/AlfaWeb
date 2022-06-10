@@ -1,6 +1,12 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { collection, onSnapshot, query } from 'firebase/firestore';
+import {
+    collection,
+    onSnapshot,
+    query,
+    doc,
+    updateDoc,
+} from 'firebase/firestore';
 import { db } from '../firebase';
 
 Vue.use(Vuex);
@@ -11,6 +17,11 @@ export default new Vuex.Store({
         courses: [],
     },
     mutations: {
+        UPDATE_COURSE(state, payload) {
+            state.courses = state.courses.map((item) =>
+                item.id === payload.id ? payload : item
+            );
+        },
         GET_COURSES(state, payload) {
             state.courses = payload;
         },
@@ -33,6 +44,28 @@ export default new Vuex.Store({
 
                     console.log(courses);
                     commit('GET_COURSES', courses);
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async update_course(state, course) {
+            try {
+                console.log('Aca');
+                console.log(state);
+                console.log(course);
+
+                const docRef = doc(db, 'courses', course.id);
+
+                await updateDoc(docRef, {
+                    courseCode: course.courseCode,
+                    courseLength: course.courseLength,
+                    date: course.date,
+                    description: course.description,
+                    name: course.name,
+                    price: course.price,
+                    registeredUsers: course.registeredUsers,
+                    url: course.url,
                 });
             } catch (error) {
                 console.log(error);

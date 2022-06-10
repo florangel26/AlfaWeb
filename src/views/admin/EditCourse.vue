@@ -13,36 +13,42 @@
                 <v-col cols="12">
                     <v-text-field
                         label="URL de la Imagen del Curso"
+                        v-model="url"
                         required
                     ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                     <v-text-field
                         label="Cupos del curso"
+                        v-model="availableSpots"
                         type="number"
                     ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                     <v-text-field
-                        label="Inscritos enel curso"
+                        label="Inscritos en el curso"
+                        v-model="registeredUsers"
                         type="number"
                     ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                     <v-text-field
                         label="Duración del curso"
+                        v-model="courseLength"
                         required
                     ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                     <v-text-field
                         label="Costo del curso"
+                        v-model="price"
                         type="number"
                     ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                     <v-text-field
                         label="Código del curso"
+                        v-model="courseCode"
                         required
                     ></v-text-field>
                 </v-col>
@@ -51,12 +57,13 @@
                         solo
                         name="input-7-4"
                         label="Descripción del curso"
+                        v-model="description"
                     ></v-textarea>
                 </v-col>
                 <v-col cols="12">
                     <v-menu
                         ref="menu"
-                        v-model="menu"
+                        v-model="date"
                         :close-on-content-click="false"
                         :return-value.sync="date"
                         transition="scale-transition"
@@ -65,7 +72,7 @@
                     >
                         <template v-slot:activator="{ on, attrs }">
                             <v-text-field
-                                v-model="date"
+                                v-model="datetime"
                                 label="Fecha de Registro"
                                 prepend-icon="mdi-calendar"
                                 readonly
@@ -73,7 +80,7 @@
                                 v-on="on"
                             ></v-text-field>
                         </template>
-                        <v-date-picker v-model="date" no-title scrollable>
+                        <v-date-picker v-model="datetime" no-title scrollable>
                             <v-spacer></v-spacer>
                             <v-btn text color="primary" @click="menu = false">
                                 Cancelar
@@ -88,18 +95,32 @@
                         </v-date-picker>
                     </v-menu>
                 </v-col>
-                <div class="finished">
-                    <v-switch
-                        v-model="finished"
-                        flat
-                        :label="`Terminado: ${finished.toString()}`"
-                    ></v-switch>
-                </div>
+                <v-col cols="12">
+                    <div class="finished">
+                        <v-switch
+                            v-model="finished"
+                            flat
+                            :label="`Terminado: ${finished.toString()}`"
+                        ></v-switch>
+                    </div>
+                </v-col>
+                <v-col cols="12">
+                    <div id="formOptions">
+                        <v-btn color="success" class="mr-4" @click="saveForm()">
+                            Editar
+                        </v-btn>
+                        <v-btn color="error" class="mr-4">
+                            Limpiar Formulario
+                        </v-btn>
+                        <v-btn color="warning"> Limpiar Validación </v-btn>
+                    </div>
+                </v-col>
             </v-row>
         </v-container>
     </div>
 </template>
 <script>
+import { mapActions } from 'vuex';
 import { db } from '../../firebase';
 import { getDoc, doc } from 'firebase/firestore';
 
@@ -111,20 +132,51 @@ export default {
             finished: false,
             courseCode: '',
             courseLength: '',
+            datetime: new Date(
+                Date.now() - new Date().getTimezoneOffset() * 60000
+            )
+                .toISOString()
+                .substr(0, 10),
             date: '',
             description: '',
             name: '',
             price: '',
             registeredUsers: 0,
+            availableSpots: 0,
             url: '',
+            id: '',
+            menu: false,
+            modal: false,
+            menu2: false,
         };
     },
     methods: {
+        ...mapActions(['update_course']),
+
         goToCreation() {
             this.$router.push('/');
         },
         saveForm() {
-            this.dialog = false;
+            console.log(new Date(this.datetime).getUTCDate());
+
+            this.update_course(
+                {
+                    id: this.$route.params.id,
+                    finished: this.finished,
+                    courseCode: this.courseCode,
+                    courseLength: this.courseLength,
+                    date: new Date(this.datetime),
+                    description: this.description,
+                    name: this.name,
+                    price: this.price,
+                    registeredUsers: this.registeredUsers,
+                    url: this.url,
+                    availableSpots: this.availableSpots,
+                },
+                this.id
+            );
+
+            this.$router.go(-1);
         },
         async get_course(id) {
             try {
@@ -141,6 +193,7 @@ export default {
                     this.price = docSnap.data().price;
                     this.registeredUsers = docSnap.data().registeredUsers;
                     this.url = docSnap.data().url;
+                    this.availableSpots = docSnap.data().availableSpots;
                 }
             } catch (error) {
                 console.log(error);
@@ -148,6 +201,7 @@ export default {
         },
     },
     mounted() {
+        this.id = this.$route.params.id;
         console.log(this.$route.params.id);
         this.get_course(this.$route.params.id);
     },
