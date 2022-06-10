@@ -96,7 +96,11 @@
                         No
                     </v-btn>
 
-                    <v-btn color="green darken-1" text @click="delete_course()">
+                    <v-btn
+                        color="green darken-1"
+                        text
+                        @click="delete_current_course()"
+                    >
                         Si
                     </v-btn>
                 </v-card-actions>
@@ -114,7 +118,6 @@ import {
     query,
     onSnapshot,
     doc,
-    deleteDoc,
     updateDoc,
 } from 'firebase/firestore';
 import moment from 'moment';
@@ -142,7 +145,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['get_courses']),
+        ...mapActions(['get_courses', 'delete_course']),
 
         getColor() {
             return 'green';
@@ -171,11 +174,10 @@ export default {
                 this.courses = desserts;
             });
         },
-        async delete_course() {
+        async delete_current_course() {
             try {
-                const docRef = doc(db, 'courses', this.id);
-                await deleteDoc(docRef);
-                this.loadCourses();
+                await this.delete_course(this.id);
+                this.get_courses();
                 this.dialog = false;
             } catch (error) {
                 console.log(error);

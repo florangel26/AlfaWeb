@@ -6,6 +6,7 @@ import {
     query,
     doc,
     updateDoc,
+    deleteDoc,
 } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -24,6 +25,9 @@ export default new Vuex.Store({
         },
         GET_COURSES(state, payload) {
             state.courses = payload;
+        },
+        DELETE_COURSE(state, payload) {
+            state.courses = state.courses.filter((item) => item.id !== payload);
         },
     },
     actions: {
@@ -63,6 +67,16 @@ export default new Vuex.Store({
                     registeredUsers: course.registeredUsers,
                     url: course.url,
                 });
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async delete_course(state, id) {
+            try {
+                console.log('Borrando');
+                console.log(id);
+                const docRef = doc(db, 'courses', id);
+                await deleteDoc(docRef);
             } catch (error) {
                 console.log(error);
             }
