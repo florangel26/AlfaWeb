@@ -51,10 +51,6 @@ export default new Vuex.Store({
         },
         async update_course(state, course) {
             try {
-                console.log('Aca');
-                console.log(state);
-                console.log(course);
-
                 const docRef = doc(db, 'courses', course.id);
 
                 await updateDoc(docRef, {

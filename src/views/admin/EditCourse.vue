@@ -157,7 +157,9 @@ export default {
             this.$router.push('/');
         },
         saveForm() {
-            console.log(new Date(this.datetime).getUTCDate());
+            var myDate = new Date(this.datetime);
+            myDate.setDate(myDate.getDate() + 1);
+            console.log(myDate);
 
             this.update_course(
                 {
@@ -165,7 +167,7 @@ export default {
                     finished: this.finished,
                     courseCode: this.courseCode,
                     courseLength: this.courseLength,
-                    date: new Date(this.datetime),
+                    date: myDate,
                     description: this.description,
                     name: this.name,
                     price: this.price,
