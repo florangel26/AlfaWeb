@@ -20,35 +20,56 @@
                 <v-col cols="12">
                     <v-text-field
                         label="Cupos del curso"
+<<<<<<< Updated upstream
                         v-model="availableSpots"
+=======
+                        v-model.number="availableSpots"
+>>>>>>> Stashed changes
                         type="number"
                     ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                     <v-text-field
+<<<<<<< Updated upstream
                         label="Inscritos en el curso"
                         v-model="registeredUsers"
+=======
+                        label="Inscritos enel curso"
+                        v-model.number="registeredUsers"
+>>>>>>> Stashed changes
                         type="number"
                     ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                     <v-text-field
                         label="Duración del curso"
+<<<<<<< Updated upstream
                         v-model="courseLength"
+=======
+                        v-model.number="courseLength"
+>>>>>>> Stashed changes
                         required
                     ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                     <v-text-field
                         label="Costo del curso"
+<<<<<<< Updated upstream
                         v-model="price"
+=======
+                        v-model.number="price"
+>>>>>>> Stashed changes
                         type="number"
                     ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                     <v-text-field
                         label="Código del curso"
+<<<<<<< Updated upstream
                         v-model="courseCode"
+=======
+                        v-model.number="courseCode"
+>>>>>>> Stashed changes
                         required
                     ></v-text-field>
                 </v-col>
@@ -80,6 +101,7 @@
                                 v-on="on"
                             ></v-text-field>
                         </template>
+<<<<<<< Updated upstream
                         <v-date-picker v-model="datetime" no-title scrollable>
                             <v-spacer></v-spacer>
                             <v-btn text color="primary" @click="menu = false">
@@ -92,8 +114,34 @@
                             >
                                 OK
                             </v-btn>
+=======
+
+                        <v-spacer></v-spacer>
+                        <v-date-picker v-model="date" no-title scrollable>
+>>>>>>> Stashed changes
                         </v-date-picker>
                     </v-menu>
+                    <v-btn
+                        class="mr-4"
+                        color="success"
+                        :disabled="!valid"
+                        @click="updateCourse"
+                    >
+                        ACTUALIZAR
+                    </v-btn>
+
+                    <v-btn color="error" class="mr-4" @click="reset">
+                        LIMPIAR FORMULARIO
+                    </v-btn>
+
+                    <v-btn
+                        color="warning"
+                        class="mr-4"
+                        @click="resetValidation"
+                    >
+                        LIMPIAR VALIDACIÓN
+                    </v-btn>
+                    <v-btn color="primary" @click="back"> REGRESAR </v-btn>
                 </v-col>
                 <v-col cols="12">
                     <div class="finished">
@@ -200,6 +248,15 @@ export default {
             } catch (error) {
                 console.log(error);
             }
+        },
+        reset() {
+            this.$refs.EditCourse.reset();
+        },
+        resetValidation() {
+            this.$refs.EditCourse.resetValidation();
+        },
+        back() {
+            this.$router.push({ name: 'courses' });
         },
     },
     mounted() {
