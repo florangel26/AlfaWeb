@@ -49,7 +49,7 @@
                                     label="Inscritos en el curso"
                                     type="number"
                                     v-model.number="registeredUsers"
-                                    :rules="textRules"
+                                    :rules="studentRules"
                                     required
                                     min="0"
                                 ></v-text-field>
@@ -128,7 +128,7 @@ export default {
             studentRules: [
                 (v) => !!v || 'Field is required',
                 (v) =>
-                    v <= this.course.availability ||
+                    v <= this.availableSpots ||
                     'More students than available spaces',
             ],
         };

@@ -94,22 +94,24 @@
                             </v-btn>
                         </v-date-picker>
                     </v-menu>
-                    <v-btn class="mr-4" color="success" @click="saveForm">
-                        ACTUALIZAR
-                    </v-btn>
+                    <v-for ref="EditCourse">
+                        <v-btn class="mr-4" color="success" @click="saveForm">
+                            ACTUALIZAR
+                        </v-btn>
 
-                    <v-btn color="error" class="mr-4" @click="reset">
-                        LIMPIAR FORMULARIO
-                    </v-btn>
+                        <v-btn color="error" class="mr-4" @click="reset">
+                            LIMPIAR FORMULARIO
+                        </v-btn>
 
-                    <v-btn
-                        color="warning"
-                        class="mr-4"
-                        @click="resetValidation"
-                    >
-                        LIMPIAR VALIDACIÓN
-                    </v-btn>
-                    <v-btn color="primary" @click="back"> REGRESAR </v-btn>
+                        <v-btn
+                            color="warning"
+                            class="mr-4"
+                            @click="resetValidation"
+                        >
+                            LIMPIAR VALIDACIÓN
+                        </v-btn>
+                        <v-btn color="primary" @click="back"> REGRESAR </v-btn>
+                    </v-for>
                 </v-col>
                 <v-col cols="12">
                     <div class="finished">
@@ -207,10 +209,10 @@ export default {
             }
         },
         reset() {
-            this.$refs.EditCourse.reset();
+            this.$ref.EditCourse.reset();
         },
         resetValidation() {
-            this.$refs.EditCourse.resetValidation();
+            this.$ref.EditCourse.resetValidation();
         },
         back() {
             this.$router.push({ name: 'courses' });

@@ -13,9 +13,16 @@ import { db } from '../firebase';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    getters: {},
     state: {
         courses: [],
+        getters: {
+            completedCourses(state) {
+                return state.courses.filter((course) => course.completed);
+            },
+            completedCoursesCount(state, getters) {
+                return getters.completedCourses.length;
+            },
+        },
     },
     mutations: {
         UPDATE_COURSE(state, payload) {

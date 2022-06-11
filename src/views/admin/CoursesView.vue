@@ -44,7 +44,7 @@
 
             <v-alert dense outlined color="purple" icon="mdi-account-group">
                 Cantidad total de alumnos permitidos:
-                <strong> </strong>
+                <strong> {{ totalAlumnos }}</strong>
                 alumnos
             </v-alert>
 
@@ -55,31 +55,31 @@
                 icon="mdi-account-multiple-check"
             >
                 Cantidad total de alumnos inscritos:
-                <strong> </strong>
+                <strong> {{ totalInscritos }}</strong>
                 alumnos
             </v-alert>
 
             <v-alert dense outlined color="red" icon="mdi-account-clock">
                 Cantidad total de cupos restantes:
-                <strong> </strong>
+                <strong> {{ totalRestantes }} </strong>
                 alumnos
             </v-alert>
 
             <v-alert dense outlined color="pink" icon="mdi-block-helper">
-                Cantidad total de cursos terminados:
-                <strong> </strong>
+                Cantidad total de cursos terminados: 4
+                <strong> {{ totalCursosCompletos }}</strong>
                 cursos
             </v-alert>
 
             <v-alert dense outlined color="brown" icon="mdi-bell-ring">
-                Cantidad total de cursos activos:
-                <strong> </strong>
+                Cantidad total de cursos activos: 2
+                <strong> {{ totalCursosCompletos }}</strong>
                 cursos
             </v-alert>
 
             <v-alert dense outlined color="deep-orange" icon="mdi-bell-ring">
                 Cantidad total de cursos:
-                <strong> </strong>
+                <strong> {{ totalCursos }}</strong>
                 cursos
             </v-alert>
         </v-container>
@@ -131,6 +131,7 @@ export default {
                     align: 'start',
                     sortable: false,
                     value: 'name',
+                    completed: false,
                 },
                 { text: 'Cupos', value: 'availableSpots' },
                 { text: 'Inscritos', value: 'registeredUsers' },
@@ -155,7 +156,7 @@ export default {
             else return 'gray';
         },
         goToEdit(item) {
-            console.log(item);
+            //console.log(item);
             this.$router.push('/admin/edit/' + item.id);
         },
         async loadCourses() {
@@ -170,7 +171,7 @@ export default {
                     });
                 });
 
-                console.log(desserts);
+                //console.log(desserts);
                 this.courses = desserts;
             });
         },
@@ -184,7 +185,6 @@ export default {
                 this.dialog = false;
             }
         },
-        //commit("DELETE_DESSERT", id);
 
         async update_dessert(dessert) {
             try {
@@ -206,7 +206,7 @@ export default {
             else return 'No';
         },
         formatDate(value) {
-            console.log(value.seconds);
+            //console.log(value.seconds);
             return moment.unix(value.seconds).format('DD/MM/YYYY');
         },
         deleteItem(item) {
@@ -215,11 +215,42 @@ export default {
             this.dialog = true;
         },
     },
-    components: {
-        AddCourse,
-    },
     computed: {
         ...mapState(['courses']),
+        totalAlumnos() {
+            return this.courses.reduce(
+                (acc, current) => acc + +current.availableSpots,
+                0
+            );
+        },
+
+        totalInscritos() {
+            const totaListInscritos = this.courses.reduce(
+                (acc, current) => acc + +current.registeredUsers,
+                0
+            );
+            return totaListInscritos;
+        },
+        totalRestantes() {
+            return this.totalAlumnos - this.totalInscritos;
+        },
+        totalCursos() {
+            return this.courses.length;
+        },
+
+        totalNoTerminado() {
+            let uncompletedCourses = this.courses;
+            uncompletedCourses = uncompletedCourses.filter((item) => {
+                return item.courseLength === 'completed';
+            });
+            return uncompletedCourses;
+        },
+        totalCursosCompletos() {
+            return this.$store.getters.completedCoursesCount;
+        },
+    },
+    components: {
+        AddCourse,
     },
     mounted() {
         //this.loadCourses();
